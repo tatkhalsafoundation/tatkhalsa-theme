@@ -14,14 +14,16 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Deploy Theme via SSH / rsync
-        uses: easingthemes/ssh-deploy@main
+      - name: Sync Theme via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
-          REMOTE_HOST: ${{ secrets.HOSTINGER_HOST }}
-          REMOTE_USER: ${{ secrets.HOSTINGER_USER }}
-          REMOTE_PORT: ${{ secrets.HOSTINGER_PORT || '65002' }}
-          TARGET: "public_html/wp-content/themes/tatkhalsa-theme/"
-          EXCLUDE: "/.git/, /.github/, /node_modules/"
-          SCRIPT_AFTER: |
-            echo "Theme deployed successfully to Hostinger live directory."
+          server: ${{ secrets.HOSTINGER_FTP_SERVER }}
+          username: ${{ secrets.HOSTINGER_FTP_USERNAME }}
+          password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          server-dir: public_html/wp-content/themes/tatkhalsa-theme/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
