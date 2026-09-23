@@ -1,0 +1,46 @@
+name: Supabase Database Keep-Alive
+
+on:
+  schedule:
+    # Run every 5 days at 00:00 UTC to prevent Supabase 7-day inactivity pause
+    - cron: '0 0 */5 * *'
+  workflow_dispatch: # Enable manual run from GitHub Actions dashboard
+
+jobs:
+  keep-alive:
+    name: Supabase Health Ping
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "::warning ::SUPABASE_URL or SUPABASE_ANON_KEY secret is not set. Skipping keep-alive ping."
+            exit 0
+          fi
+
+          ENDPOINT="${SUPABASE_URL%/}/rest/v1/tkf_blood_requests?select=id&limit=1"
+          echo "Pinging Supabase endpoint: $ENDPOINT"
+
+          RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}\nTIME_TOTAL:%{time_total}s" \
+            -X GET "$ENDPOINT" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            -H "Content-Type: application/json")
+
+          HTTP_BODY=$(echo "$RESPONSE" | sed -e '$d' | sed -e '$d')
+          HTTP_STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS" | cut -d':' -f2)
+          TIME_TOTAL=$(echo "$RESPONSE" | grep "TIME_TOTAL" | cut -d':' -f2)
+
+          echo "Response Status: $HTTP_STATUS"
+          echo "Latency: $TIME_TOTAL"
+          echo "Response Body: $HTTP_BODY"
+
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+            echo "::notice ::Supabase ping succeeded (HTTP $HTTP_STATUS in $TIME_TOTAL). Database active."
+          else
+            echo "::error ::Supabase ping failed with HTTP $HTTP_STATUS"
+            exit 1
+          fi
