@@ -148,8 +148,9 @@
                 </div>
             `;
 
-            const ajaxUrl = (typeof tk_theme_vars !== 'undefined') ? tk_theme_vars.ajax_url : '/wp-admin/admin-ajax.php';
-            const nonce = (typeof tk_theme_vars !== 'undefined') ? tk_theme_vars.nonce : '';
+            const ajaxConfig = (typeof tkData !== 'undefined') ? tkData : ((typeof tk_theme_vars !== 'undefined') ? tk_theme_vars : null);
+            const ajaxUrl = ajaxConfig && (ajaxConfig.ajaxUrl || ajaxConfig.ajax_url) ? (ajaxConfig.ajaxUrl || ajaxConfig.ajax_url) : '/wp-admin/admin-ajax.php';
+            const nonce = ajaxConfig && ajaxConfig.nonce ? ajaxConfig.nonce : '';
 
             const formData = new FormData();
             formData.append('action', 'tk_search_donors');
@@ -238,15 +239,16 @@
             e.preventDefault();
 
             const submitBtn = form.querySelector('button[type="submit"]');
+            if (!submitBtn) return;
             const originalBtnText = submitBtn.innerHTML;
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span>Broadcasting SOS Emergency...</span>';
 
             const formData = new FormData(form);
             formData.append('action', 'tk_submit_blood_request');
-            formData.append('nonce', (typeof tk_theme_vars !== 'undefined') ? tk_theme_vars.nonce : '');
+            formData.append('nonce', (typeof tkData !== 'undefined') ? tkData.nonce : ((typeof tk_theme_vars !== 'undefined') ? tk_theme_vars.nonce : ''));
 
-            const ajaxUrl = (typeof tk_theme_vars !== 'undefined') ? tk_theme_vars.ajax_url : '/wp-admin/admin-ajax.php';
+            const ajaxUrl = (typeof tkData !== 'undefined') ? tkData.ajaxUrl : ((typeof tk_theme_vars !== 'undefined') ? tk_theme_vars.ajax_url : '/wp-admin/admin-ajax.php');
 
             fetch(ajaxUrl, {
                 method: 'POST',
@@ -293,15 +295,16 @@
             e.preventDefault();
 
             const submitBtn = form.querySelector('button[type="submit"]');
+            if (!submitBtn) return;
             const originalBtnText = submitBtn.innerHTML;
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span>Registering Donor...</span>';
 
             const formData = new FormData(form);
             formData.append('action', 'tk_register_donor');
-            formData.append('nonce', (typeof tk_theme_vars !== 'undefined') ? tk_theme_vars.nonce : '');
+            formData.append('nonce', (typeof tkData !== 'undefined') ? tkData.nonce : ((typeof tk_theme_vars !== 'undefined') ? tk_theme_vars.nonce : ''));
 
-            const ajaxUrl = (typeof tk_theme_vars !== 'undefined') ? tk_theme_vars.ajax_url : '/wp-admin/admin-ajax.php';
+            const ajaxUrl = (typeof tkData !== 'undefined') ? tkData.ajaxUrl : ((typeof tk_theme_vars !== 'undefined') ? tk_theme_vars.ajax_url : '/wp-admin/admin-ajax.php');
 
             fetch(ajaxUrl, {
                 method: 'POST',

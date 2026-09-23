@@ -408,6 +408,9 @@ function tk_ajax_register_donor() {
 }
 add_action('wp_ajax_tk_register_donor', 'tk_ajax_register_donor');
 add_action('wp_ajax_nopriv_tk_register_donor', 'tk_ajax_register_donor');
+// Backwards-compatible action names used by the original Blood On Call integration.
+add_action('wp_ajax_tk_donor_register', 'tk_ajax_register_donor');
+add_action('wp_ajax_nopriv_tk_donor_register', 'tk_ajax_register_donor');
 
 /**
  * 6. AJAX ENDPOINT: SUBMIT EMERGENCY BLOOD REQUEST
@@ -466,6 +469,9 @@ function tk_ajax_submit_blood_request() {
 }
 add_action('wp_ajax_tk_submit_blood_request', 'tk_ajax_submit_blood_request');
 add_action('wp_ajax_nopriv_tk_submit_blood_request', 'tk_ajax_submit_blood_request');
+// Backwards-compatible action names used by the original Blood On Call integration.
+add_action('wp_ajax_tk_blood_request_submit', 'tk_ajax_submit_blood_request');
+add_action('wp_ajax_nopriv_tk_blood_request_submit', 'tk_ajax_submit_blood_request');
 
 /**
  * 7. AJAX ENDPOINT: LIVE TELEMETRY STATS
