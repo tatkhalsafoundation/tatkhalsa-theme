@@ -1,0 +1,27 @@
+name: Deploy Custom Theme to Hostinger
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to Live Hostinger
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy Theme via SSH / rsync
+        uses: easingthemes/ssh-deploy@main
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.HOSTINGER_HOST }}
+          REMOTE_USER: ${{ secrets.HOSTINGER_USER }}
+          REMOTE_PORT: ${{ secrets.HOSTINGER_PORT || '65002' }}
+          TARGET: "public_html/wp-content/themes/tatkhalsa-theme/"
+          EXCLUDE: "/.git/, /.github/, /node_modules/"
+          SCRIPT_AFTER: |
+            echo "Theme deployed successfully to Hostinger live directory."
