@@ -210,7 +210,7 @@ get_header(); ?>
                 <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/project-blood-on-call.webp'); ?>" alt="Blood On Call 2.0" class="tk-card-image" loading="lazy">
                 <h3 class="tk-card-title">Blood On Call 2.0</h3>
                 <p class="tk-card-text">
-                    Sub-15 minute emergency blood and platelet dispatch across Punjab. Over 4,850+ verified units dispatched to road accidents and ICU units.
+                    Rapid emergency blood and platelet coordination across Punjab, connecting verified donors with patients at no commercial cost. Reach the dispatch desk when every minute matters.
                 </p>
                 <a href="#blood-on-call" class="tk-btn tk-btn-glass tk-btn-sm tk-touch-target">Open Dispatch Grid &rarr;</a>
             </div>
@@ -289,9 +289,9 @@ get_header(); ?>
                 <div style="background: var(--tk-bg-elevated); padding: 20px; border-radius: var(--tk-radius-md); font-family: var(--tk-font-mono); font-size: 0.9375rem; line-height: 1.8; margin-bottom: 20px; border: 1px solid var(--tk-border-subtle);">
                     <div><strong>Account Name:</strong> TATKHALSA FOUNDATION</div>
                     <div><strong>Bank:</strong> Axis Bank Ltd.</div>
-                    <div><strong>Account Type:</strong> Current Account (Section 8 NGO)</div>
-                    <div><strong>IFSC Code:</strong> UTIB0000000</div>
-                    <div><strong>UPI ID:</strong> tatkhalsa@axisbank</div>
+                    <div><strong>Account Number:</strong> 925010057912966</div>
+                    <div><strong>IFSC Code:</strong> UTIB0004354</div>
+                    <div><strong>UPI ID:</strong> mab.037215043540097@axisbank</div>
                 </div>
                 <p style="font-size: 0.8125rem; color: var(--tk-text-muted);">
                     * For international remittances (UAE / UK / US / Canada / Australia), please connect with our global seva desk at <a href="mailto:info@tatkhalsa.in" style="color: var(--tk-gold);">info@tatkhalsa.in</a>.
