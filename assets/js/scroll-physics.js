@@ -1,253 +1,225 @@
 /**
- * Tatkhalsa Pro Max - Scroll Physics, Off-Canvas Drawer & Motion Engine
+ * Tatkhalsa Foundation Pro Max - Frontend UI Engine
+ * Pure Vanilla JavaScript | Crash-Proof Defensive Architecture
  *
- * @package TatkhalsaTheme
- * @version 1.1.0
+ * @version 1.3.0
  */
 
-(function () {
+document.addEventListener('DOMContentLoaded', function() {
     'use strict';
+    console.log('Tatkhalsa UI Engine Loaded Successfully');
 
-    document.addEventListener('DOMContentLoaded', function () {
-        initOffCanvasDrawer();
-        initCenterToHeaderLogoAnimation();
-        initTelemetryCounters();
-    });
+    /* ==========================================================================
+       1. CLEAN HAMBURGER & OFF-CANVAS DRAWER CONTROLLER
+       ========================================================================== */
+    var hamburger = document.querySelector('.tk-hamburger');
+    var drawer = document.querySelector('.tk-drawer');
+    var overlay = document.querySelector('.tk-drawer-overlay');
+    var closeBtn = document.querySelector('.tk-drawer-close');
+    var drawerLinks = document.querySelectorAll('.tk-drawer-link, .tk-drawer-phone, .tk-btn-blood-drawer');
 
-    /**
-     * 1. ACCESSIBLE OFF-CANVAS DRAWER CONTROLLER
-     */
-    function initOffCanvasDrawer() {
-        const hamburger = document.getElementById('tk-hamburger');
-        const drawer = document.getElementById('tk-drawer');
-        const overlay = document.getElementById('tk-drawer-overlay');
-        const closeBtn = document.getElementById('tk-drawer-close');
-        const drawerLinks = drawer ? drawer.querySelectorAll('.tk-drawer-link, .tk-btn-blood-drawer') : [];
-
-        if (!hamburger || !drawer || !overlay) return;
-
-        let lastActiveElement = null;
-
-        function openDrawer() {
-            lastActiveElement = document.activeElement;
-
-            drawer.classList.add('active');
-            overlay.classList.add('active');
-            hamburger.classList.add('active');
-
+    function openDrawer() {
+        if (hamburger) {
+            hamburger.classList.add('is-open', 'active');
+            hamburger.setAttribute('aria-expanded', 'true');
+        }
+        if (drawer) {
+            drawer.classList.add('is-open', 'active');
             drawer.removeAttribute('inert');
             drawer.setAttribute('aria-hidden', 'false');
-            overlay.setAttribute('aria-hidden', 'false');
-            hamburger.setAttribute('aria-expanded', 'true');
-
-            document.body.classList.add('tk-scroll-locked');
-
-            setTimeout(() => {
-                if (closeBtn) closeBtn.focus();
-            }, 100);
-
-            document.addEventListener('keydown', handleKeyDown);
         }
+        if (overlay) {
+            overlay.classList.add('is-open', 'active');
+            overlay.setAttribute('aria-hidden', 'false');
+        }
+        document.body.classList.add('tk-scroll-locked');
+    }
 
-        function closeDrawer() {
-            drawer.classList.remove('active');
-            overlay.classList.remove('active');
-            hamburger.classList.remove('active');
-
+    function closeDrawer() {
+        if (hamburger) {
+            hamburger.classList.remove('is-open', 'active');
+            hamburger.setAttribute('aria-expanded', 'false');
+        }
+        if (drawer) {
+            drawer.classList.remove('is-open', 'active');
             drawer.setAttribute('inert', '');
             drawer.setAttribute('aria-hidden', 'true');
+        }
+        if (overlay) {
+            overlay.classList.remove('is-open', 'active');
             overlay.setAttribute('aria-hidden', 'true');
-            hamburger.setAttribute('aria-expanded', 'false');
+        }
+        document.body.classList.remove('tk-scroll-locked');
+    }
 
-            document.body.classList.remove('tk-scroll-locked');
-            document.removeEventListener('keydown', handleKeyDown);
+    function toggleDrawer() {
+        if (drawer && (drawer.classList.contains('is-open') || drawer.classList.contains('active'))) {
+            closeDrawer();
+        } else {
+            openDrawer();
+        }
+    }
 
-            if (lastActiveElement && typeof lastActiveElement.focus === 'function') {
-                lastActiveElement.focus();
+    if (hamburger) {
+        hamburger.addEventListener('click', function(e) {
+            e.preventDefault();
+            toggleDrawer();
+        });
+    }
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            closeDrawer();
+        });
+    }
+
+    if (overlay) {
+        overlay.addEventListener('click', function(e) {
+            e.preventDefault();
+            closeDrawer();
+        });
+    }
+
+    if (drawerLinks && drawerLinks.length > 0) {
+        drawerLinks.forEach(function(link) {
+            if (link) {
+                link.addEventListener('click', function() {
+                    closeDrawer();
+                });
+            }
+        });
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            if (drawer && (drawer.classList.contains('is-open') || drawer.classList.contains('active'))) {
+                closeDrawer();
             }
         }
+    });
 
-        function toggleDrawer() {
-            const isOpen = drawer.classList.contains('active');
-            if (isOpen) {
-                closeDrawer();
-            } else {
-                openDrawer();
+    /* ==========================================================================
+       2. RELIABLE SCROLL-DRIVEN LOGO PHYSICS & BODY STATE
+       ========================================================================== */
+    var header = document.querySelector('.tk-header');
+    var isTicking = false;
+
+    function handleScroll() {
+        var scrollY = window.scrollY || window.pageYOffset || 0;
+
+        if (scrollY > 50) {
+            if (!document.body.classList.contains('scrolled')) {
+                document.body.classList.add('scrolled');
+            }
+            if (header && !header.classList.contains('scrolled')) {
+                header.classList.add('scrolled');
+            }
+        } else {
+            if (document.body.classList.contains('scrolled')) {
+                document.body.classList.remove('scrolled');
+            }
+            if (header && header.classList.contains('scrolled')) {
+                header.classList.remove('scrolled');
             }
         }
+        isTicking = false;
+    }
 
-        function handleKeyDown(e) {
-            if (e.key === 'Escape') {
-                e.preventDefault();
-                closeDrawer();
-                return;
-            }
+    window.addEventListener('scroll', function() {
+        if (!isTicking) {
+            window.requestAnimationFrame(handleScroll);
+            isTicking = true;
+        }
+    }, { passive: true });
 
-            if (e.key === 'Tab') {
-                const focusable = drawer.querySelectorAll(
-                    'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
-                );
-                if (focusable.length === 0) return;
+    // Initial check on page load
+    handleScroll();
 
-                const firstElement = focusable[0];
-                const lastElement = focusable[focusable.length - 1];
+    /* ==========================================================================
+       3. TELEMETRY STATS COUNTER ANIMATION
+       ========================================================================== */
+    var telemetrySection = document.querySelector('.tk-telemetry-strip');
+    var counters = document.querySelectorAll('.tk-stat-num[data-target]');
+    var animated = false;
 
-                if (e.shiftKey && document.activeElement === firstElement) {
-                    e.preventDefault();
-                    lastElement.focus();
-                } else if (!e.shiftKey && document.activeElement === lastElement) {
-                    e.preventDefault();
-                    firstElement.focus();
+    if (telemetrySection && counters.length > 0 && 'IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting && !animated) {
+                    animated = true;
+                    counters.forEach(function(counter) {
+                        var target = parseInt(counter.getAttribute('data-target'), 10);
+                        if (isNaN(target)) return;
+                        var duration = 1600;
+                        var start = 0;
+                        var startTime = null;
+
+                        function step(timestamp) {
+                            if (!startTime) startTime = timestamp;
+                            var progress = Math.min((timestamp - startTime) / duration, 1);
+                            var easeOut = 1 - Math.pow(1 - progress, 3);
+                            var current = Math.floor(easeOut * target);
+                            counter.innerText = current.toLocaleString('en-IN');
+                            if (progress < 1) {
+                                window.requestAnimationFrame(step);
+                            } else {
+                                counter.innerText = target.toLocaleString('en-IN');
+                            }
+                        }
+                        window.requestAnimationFrame(step);
+                    });
                 }
+            });
+        }, { threshold: 0.2 });
+
+        observer.observe(telemetrySection);
+    }
+
+    /* ==========================================================================
+       4. BACK TO TOP BUTTON
+       ========================================================================== */
+    var backToTop = document.querySelector('.tk-back-to-top');
+    if (backToTop) {
+        window.addEventListener('scroll', function() {
+            var scrollY = window.scrollY || window.pageYOffset || 0;
+            if (scrollY > 400) {
+                backToTop.classList.add('is-visible');
+            } else {
+                backToTop.classList.remove('is-visible');
             }
-        }
+        }, { passive: true });
 
-        hamburger.addEventListener('click', toggleDrawer);
-        overlay.addEventListener('click', closeDrawer);
-        if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
-
-        drawerLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                closeDrawer();
+        backToTop.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
             });
         });
     }
 
-    /**
-     * 2. CENTER-TO-HEADER LOGO ANIMATION (FLIGHT DOCK ENGINE)
-     */
-    function initCenterToHeaderLogoAnimation() {
-        const header = document.getElementById('tk-header');
-        const heroEmblem = document.getElementById('heroEmblem');
-        const navDock = document.getElementById('tkNavLogoDock');
-        const headerLogoImg = document.getElementById('tkHeaderLogoImg');
-
-        if (!heroEmblem || !header) return;
-
-        let isTicking = false;
-        let isDocked = false;
-
-        function updateFlight() {
-            const scrollY = window.pageYOffset || document.documentElement.scrollTop;
-            const threshold = 60;
-
-            // Toggle header scrolled state
-            if (scrollY > 30) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-
-            if (scrollY <= 0) {
-                // Resting hero state
-                heroEmblem.style.transform = 'translate3d(0, 0, 0) scale(1)';
-                heroEmblem.style.opacity = '1';
-                heroEmblem.style.visibility = 'visible';
-                if (headerLogoImg) headerLogoImg.classList.remove('is-docked');
-                isDocked = false;
-            } else if (scrollY >= threshold + 140) {
-                // Fully docked state
-                if (!isDocked) {
-                    heroEmblem.style.opacity = '0';
-                    heroEmblem.style.visibility = 'hidden';
-                    if (headerLogoImg) headerLogoImg.classList.add('is-docked');
-                    isDocked = true;
-                }
-            } else if (scrollY > threshold) {
-                // Transition flight state
-                if (navDock) {
-                    const heroRect = heroEmblem.getBoundingClientRect();
-                    const dockRect = navDock.getBoundingClientRect();
-
-                    const deltaX = dockRect.left + (dockRect.width / 2) - (heroRect.left + (heroRect.width / 2));
-                    const deltaY = dockRect.top + (dockRect.height / 2) - (heroRect.top + (heroRect.height / 2));
-                    const progress = Math.min((scrollY - threshold) / 140, 1);
-                    const ease = 1 - Math.pow(1 - progress, 3);
-
-                    const curX = deltaX * ease;
-                    const curY = deltaY * ease;
-                    const curScale = 1 - (1 - (44 / 116)) * ease;
-
-                    heroEmblem.style.transform = `translate3d(${curX.toFixed(2)}px, ${curY.toFixed(2)}px, 0) scale(${curScale.toFixed(4)})`;
-                    heroEmblem.style.opacity = (1 - progress * 0.4).toFixed(3);
-                    heroEmblem.style.visibility = 'visible';
-                }
-
-                if (headerLogoImg) headerLogoImg.classList.remove('is-docked');
-                isDocked = false;
-            } else {
-                // Scrolling 0-60px
-                heroEmblem.style.transform = 'translate3d(0, 0, 0) scale(1)';
-                heroEmblem.style.opacity = '1';
-                heroEmblem.style.visibility = 'visible';
-                if (headerLogoImg) headerLogoImg.classList.remove('is-docked');
-                isDocked = false;
-            }
-
-            isTicking = false;
-        }
-
-        window.addEventListener('scroll', function () {
-            if (!isTicking) {
-                window.requestAnimationFrame(updateFlight);
-                isTicking = true;
-            }
-        }, { passive: true });
-
-        window.addEventListener('resize', updateFlight);
-        updateFlight();
-    }
-
-    /**
-     * 3. TELEMETRY STATS COUNTER
-     */
-    function initTelemetryCounters() {
-        const counters = document.querySelectorAll('.tk-counter');
-        if (!counters.length) return;
-
-        let animated = false;
-
-        function runCounters() {
-            if (animated) return;
-            animated = true;
-
-            counters.forEach((counter) => {
-                const target = parseInt(counter.getAttribute('data-target'), 10) || 0;
-                const prefix = counter.getAttribute('data-prefix') || '';
-                const suffix = counter.getAttribute('data-suffix') || '+';
-                const duration = 1800;
-                const startTime = performance.now();
-
-                function update(currentTime) {
-                    const elapsed = currentTime - startTime;
-                    const progress = Math.min(elapsed / duration, 1);
-                    const ease = 1 - Math.pow(1 - progress, 3);
-                    const current = Math.floor(ease * target);
-
-                    counter.textContent = prefix + current.toLocaleString() + suffix;
-
-                    if (progress < 1) {
-                        requestAnimationFrame(update);
-                    } else {
-                        counter.textContent = prefix + target.toLocaleString() + suffix;
+    /* ==========================================================================
+       5. SMOOTH ANCHOR SCROLLING (DEFENSIVE)
+       ========================================================================== */
+    var anchorLinks = document.querySelectorAll('a[href^="#"]:not([href="#"])');
+    if (anchorLinks && anchorLinks.length > 0) {
+        anchorLinks.forEach(function(anchor) {
+            if (anchor) {
+                anchor.addEventListener('click', function(e) {
+                    var targetId = this.getAttribute('href');
+                    if (targetId && targetId.length > 1) {
+                        var targetElement = document.querySelector(targetId);
+                        if (targetElement) {
+                            e.preventDefault();
+                            targetElement.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
                     }
-                }
-
-                requestAnimationFrame(update);
-            });
-        }
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    runCounters();
-                    observer.disconnect();
-                }
-            });
-        }, { threshold: 0.3 });
-
-        const el = document.getElementById('telemetry-counters');
-        if (el) observer.observe(el);
+                });
+            }
+        });
     }
-
-})();
+});
