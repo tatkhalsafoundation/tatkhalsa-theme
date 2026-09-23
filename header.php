@@ -5,21 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <link rel="profile" href="https://gmpg.org/xfn/11">
 
-    <!-- ZERO-FOUC THEME INITIALIZATION SCRIPT (Runs synchronously before render) -->
+    <!-- Zero-FOUC Theme Script -->
     <script>
         (function() {
             try {
                 var savedTheme = localStorage.getItem('tatkhalsa_theme');
                 var systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-                var theme = savedTheme || (systemPrefersDark ? 'dark' : 'dark'); // Default to dark aesthetic
+                var theme = savedTheme || (systemPrefersDark ? 'dark' : 'dark');
                 document.documentElement.setAttribute('data-theme', theme);
                 document.documentElement.classList.add(theme);
-                if (theme === 'light') {
-                    document.documentElement.classList.remove('dark');
-                }
-            } catch (e) {
-                console.warn('Zero-FOUC loader error', e);
-            }
+            } catch (e) {}
         })();
     </script>
 
@@ -29,50 +24,152 @@
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
-<!-- ACCESSIBILITY SKIP TO CONTENT -->
-<a class="screen-reader-text tk-touch-target" href="#primary-content" style="position: absolute; top: -9999px; left: 20px; z-index: 99999; background: var(--tk-gold); color: #020617; padding: 12px 20px; border-radius: 8px; font-weight: 700; text-decoration: none;">
+<!-- Accessible Skip Link -->
+<a class="screen-reader-text tk-skip-link" href="#primary-content">
     <?php esc_html_e('Skip to main content', 'tatkhalsa-theme'); ?>
 </a>
 
-<!-- STICKY GLASS HEADER WITH GSAP LOGO TARGET CONTAINER -->
-<header id="masthead" class="tk-header-wrapper" role="banner">
-    <nav class="tk-navbar" aria-label="<?php esc_attr_e('Main Navigation', 'tatkhalsa-theme'); ?>">
+<!-- =========================================================================
+     1. FIXED HEADER (STRICT 2-ITEM LAYOUT)
+     ========================================================================= -->
+<header class="tk-header" id="tk-header" role="banner">
+    <div class="tk-header-container">
         
-        <!-- Brand / Sticky Logo Docking Slot -->
-        <a href="<?php echo esc_url(home_url('/')); ?>" class="tk-nav-brand-slot" rel="home">
-            <div id="tk-navbar-logo-slot" class="tk-nav-logo-target" aria-hidden="true">
-                <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/tatkhalsa-logo.png'); ?>" alt="<?php bloginfo('name'); ?> Emblem" width="44" height="44">
+        <!-- Left: Destination anchor for circular emblem -->
+        <a href="<?php echo esc_url(home_url('/')); ?>" class="tk-logo-anchor" id="tk-logo-anchor" aria-label="<?php bloginfo('name'); ?>">
+            <div class="tk-header-logo-dock" id="tkNavLogoDock">
+                <img 
+                    src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/tatkhalsa-logo.png'); ?>" 
+                    alt="<?php bloginfo('name'); ?> Emblem" 
+                    class="tk-header-logo-img" 
+                    id="tkHeaderLogoImg"
+                    width="44" 
+                    height="44" 
+                    loading="eager" 
+                />
             </div>
-            <div class="tk-nav-title-group">
-                <span class="tk-nav-title"><?php bloginfo('name'); ?></span>
-                <span class="tk-nav-subtitle">Blood On Call 2.0</span>
+            <div class="tk-logo-brand">
+                <span class="tk-logo-title"><?php bloginfo('name'); ?></span>
+                <span class="tk-logo-subtitle">Foundation</span>
             </div>
         </a>
 
-        <!-- Desktop Navigation Menu -->
-        <ul class="tk-nav-menu" role="menubar">
-            <li role="none"><a href="#blood-on-call" class="tk-nav-link" role="menuitem"><?php esc_html_e('Blood On Call', 'tatkhalsa-theme'); ?></a></li>
-            <li role="none"><a href="#seva-verticals" class="tk-nav-link" role="menuitem"><?php esc_html_e('Seva Verticals', 'tatkhalsa-theme'); ?></a></li>
-            <li role="none"><a href="#transparency" class="tk-nav-link" role="menuitem"><?php esc_html_e('Transparency & 80G', 'tatkhalsa-theme'); ?></a></li>
-            <li role="none"><a href="#statutory-compliance" class="tk-nav-link" role="menuitem"><?php esc_html_e('Compliance', 'tatkhalsa-theme'); ?></a></li>
-        </ul>
+        <!-- Right: Blood On Call 2.0 CTA & Minimal 3-Line Hamburger Button -->
+        <div class="tk-header-right">
+            <a href="#blood-on-call" class="tk-btn-blood" role="button" aria-label="<?php esc_attr_e('Blood On Call 2.0 Emergency Service', 'tatkhalsa-theme'); ?>">
+                <span class="tk-btn-blood-pulse" aria-hidden="true"></span>
+                <span class="tk-btn-blood-icon" aria-hidden="true">🩸</span>
+                <span class="tk-btn-blood-text">Blood On Call 2.0</span>
+            </a>
 
-        <!-- Action Items (Theme Switcher + Emergency SOS Button) -->
-        <div class="tk-nav-actions">
-            <!-- Theme Toggle Button (Dark/Light) -->
-            <button id="tk-theme-toggle" class="tk-theme-toggle tk-touch-target" aria-label="<?php esc_attr_e('Toggle Dark/Light Mode', 'tatkhalsa-theme'); ?>" title="Toggle Theme">
-                <svg class="tk-icon-sun" viewBox="0 0 24 24">
-                    <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
-                </svg>
-                <svg class="tk-icon-moon" viewBox="0 0 24 24">
-                    <path d="M12.3 2a10 10 0 0 0-.19 20 10 10 0 0 0 8.7-5.1 1 1 0 0 0-1-1.44 8 8 0 1 1-8.95-8.95 1 1 0 0 0-1.44-1A10 10 0 0 0 12.3 2z"/>
-                </svg>
-            </button>
-
-            <!-- Emergency Blood Request Trigger Button -->
-            <button class="tk-btn tk-btn-emergency tk-btn-sm tk-touch-target" data-modal="modal-request-blood" aria-label="<?php esc_attr_e('Request Emergency Blood', 'tatkhalsa-theme'); ?>">
-                <span>SOS Blood Request</span>
+            <button 
+                type="button" 
+                class="tk-hamburger" 
+                id="tk-hamburger" 
+                aria-label="<?php esc_attr_e('Toggle navigation menu', 'tatkhalsa-theme'); ?>" 
+                aria-controls="tk-drawer" 
+                aria-expanded="false"
+            >
+                <span class="tk-hamburger-box">
+                    <span class="tk-hamburger-line"></span>
+                    <span class="tk-hamburger-line"></span>
+                    <span class="tk-hamburger-line"></span>
+                </span>
             </button>
         </div>
-    </nav>
+
+    </div>
 </header>
+
+<!-- Off-Canvas Drawer Backdrop Overlay -->
+<div class="tk-drawer-overlay" id="tk-drawer-overlay" aria-hidden="true"></div>
+
+<!-- =========================================================================
+     2. HIDDEN SLIDE-OUT NAVIGATION DRAWER (<nav class="tk-drawer">)
+     ========================================================================= -->
+<nav class="tk-drawer" id="tk-drawer" aria-label="<?php esc_attr_e('Main Navigation Drawer', 'tatkhalsa-theme'); ?>" aria-hidden="true" inert>
+    <div class="tk-drawer-inner">
+        
+        <!-- Drawer Top Bar -->
+        <div class="tk-drawer-header">
+            <div class="tk-drawer-brand">
+                <img 
+                    src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/tatkhalsa-logo.png'); ?>" 
+                    alt="<?php bloginfo('name'); ?>" 
+                    class="tk-drawer-logo" 
+                    width="36" 
+                    height="36" 
+                />
+                <div class="tk-drawer-brand-text">
+                    <span class="tk-drawer-brand-title"><?php bloginfo('name'); ?></span>
+                    <span class="tk-drawer-brand-tagline">ਸੇਵਾ • ਸਮਰਪਣ • ਪਾਰਦਰਸ਼ਤਾ</span>
+                </div>
+            </div>
+            <button type="button" class="tk-drawer-close" id="tk-drawer-close" aria-label="<?php esc_attr_e('Close navigation menu', 'tatkhalsa-theme'); ?>">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Drawer Navigation Links -->
+        <ul class="tk-drawer-nav" role="menubar">
+            <li class="tk-drawer-item" role="none">
+                <a href="#home" class="tk-drawer-link" role="menuitem">
+                    <span class="tk-drawer-icon" aria-hidden="true">🏛️</span>
+                    <span class="tk-drawer-link-text"><?php esc_html_e('Home', 'tatkhalsa-theme'); ?></span>
+                </a>
+            </li>
+            <li class="tk-drawer-item" role="none">
+                <a href="#about-us" class="tk-drawer-link" role="menuitem">
+                    <span class="tk-drawer-icon" aria-hidden="true">📜</span>
+                    <span class="tk-drawer-link-text"><?php esc_html_e('About Us', 'tatkhalsa-theme'); ?></span>
+                </a>
+            </li>
+            <li class="tk-drawer-item" role="none">
+                <a href="#seva-verticals" class="tk-drawer-link" role="menuitem">
+                    <span class="tk-drawer-icon" aria-hidden="true">🤝</span>
+                    <span class="tk-drawer-link-text"><?php esc_html_e('Our Seva Projects', 'tatkhalsa-theme'); ?></span>
+                </a>
+            </li>
+            <li class="tk-drawer-item" role="none">
+                <a href="#transparency" class="tk-drawer-link" role="menuitem">
+                    <span class="tk-drawer-icon" aria-hidden="true">⚖️</span>
+                    <span class="tk-drawer-link-text"><?php esc_html_e('Transparency & 80G', 'tatkhalsa-theme'); ?></span>
+                </a>
+            </li>
+            <li class="tk-drawer-item" role="none">
+                <a href="#gallery" class="tk-drawer-link" role="menuitem">
+                    <span class="tk-drawer-icon" aria-hidden="true">🖼️</span>
+                    <span class="tk-drawer-link-text"><?php esc_html_e('Gallery & Media', 'tatkhalsa-theme'); ?></span>
+                </a>
+            </li>
+            <li class="tk-drawer-item" role="none">
+                <a href="#volunteer" class="tk-drawer-link" role="menuitem">
+                    <span class="tk-drawer-icon" aria-hidden="true">🙋♂️</span>
+                    <span class="tk-drawer-link-text"><?php esc_html_e('Join as Volunteer', 'tatkhalsa-theme'); ?></span>
+                </a>
+            </li>
+            <li class="tk-drawer-item" role="none">
+                <a href="#contribute" class="tk-drawer-link tk-drawer-link-contribute" role="menuitem">
+                    <span class="tk-drawer-icon" aria-hidden="true">💛</span>
+                    <span class="tk-drawer-link-text"><?php esc_html_e('Contribute', 'tatkhalsa-theme'); ?></span>
+                </a>
+            </li>
+        </ul>
+
+        <!-- Drawer Emergency Action & Contact Footer -->
+        <div class="tk-drawer-footer">
+            <a href="#blood-on-call" class="tk-btn-blood tk-btn-blood-drawer" role="button">
+                <span class="tk-btn-blood-icon" aria-hidden="true">🩸</span>
+                <span>Blood On Call 2.0 SOS</span>
+            </a>
+            <div class="tk-drawer-contact">
+                <span>24x7 Helpline Dispatch:</span>
+                <a href="tel:+919877038520" class="tk-drawer-phone">+91 98770 38520</a>
+            </div>
+        </div>
+
+    </div>
+</nav>

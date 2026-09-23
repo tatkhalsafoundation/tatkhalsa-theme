@@ -1,177 +1,205 @@
 /**
- * Tatkhalsa Pro Max - Scroll Physics & GSAP Motion Engine
- *
- * Handles Lenis smooth scrolling, GSAP ScrollTrigger orchestration,
- * center-to-left sticky header logo docking morph, bento card reveals,
- * and dynamic telemetry counter animations.
+ * Tatkhalsa Pro Max - Scroll Physics, Off-Canvas Drawer & Motion Engine
  *
  * @package TatkhalsaTheme
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 (function () {
     'use strict';
 
-    // Wait until DOM is ready
     document.addEventListener('DOMContentLoaded', function () {
-        initLenisAndGSAP();
+        initOffCanvasDrawer();
+        initCenterToHeaderLogoAnimation();
+        initTelemetryCounters();
     });
 
-    function initLenisAndGSAP() {
-        // 1. Initialize Lenis Smooth Scroll
-        let lenis = null;
-        if (typeof Lenis !== 'undefined') {
-            lenis = new Lenis({
-                duration: 1.2,
-                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-                direction: 'vertical',
-                gestureDirection: 'vertical',
-                smooth: true,
-                mouseMultiplier: 1,
-                smoothTouch: false,
-                touchMultiplier: 2,
-                infinite: false,
-            });
+    /**
+     * 1. ACCESSIBLE OFF-CANVAS DRAWER CONTROLLER
+     */
+    function initOffCanvasDrawer() {
+        const hamburger = document.getElementById('tk-hamburger');
+        const drawer = document.getElementById('tk-drawer');
+        const overlay = document.getElementById('tk-drawer-overlay');
+        const closeBtn = document.getElementById('tk-drawer-close');
+        const drawerLinks = drawer ? drawer.querySelectorAll('.tk-drawer-link, .tk-btn-blood-drawer') : [];
 
-            // Connect Lenis to GSAP ScrollTrigger if available
-            if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-                gsap.registerPlugin(ScrollTrigger);
-                lenis.on('scroll', ScrollTrigger.update);
+        if (!hamburger || !drawer || !overlay) return;
 
-                gsap.ticker.add((time) => {
-                    lenis.raf(time * 1000);
-                });
+        let lastActiveElement = null;
 
-                gsap.ticker.lagSmoothing(0);
+        function openDrawer() {
+            lastActiveElement = document.activeElement;
+
+            drawer.classList.add('active');
+            overlay.classList.add('active');
+            hamburger.classList.add('active');
+
+            drawer.removeAttribute('inert');
+            drawer.setAttribute('aria-hidden', 'false');
+            overlay.setAttribute('aria-hidden', 'false');
+            hamburger.setAttribute('aria-expanded', 'true');
+
+            document.body.classList.add('tk-scroll-locked');
+
+            setTimeout(() => {
+                if (closeBtn) closeBtn.focus();
+            }, 100);
+
+            document.addEventListener('keydown', handleKeyDown);
+        }
+
+        function closeDrawer() {
+            drawer.classList.remove('active');
+            overlay.classList.remove('active');
+            hamburger.classList.remove('active');
+
+            drawer.setAttribute('inert', '');
+            drawer.setAttribute('aria-hidden', 'true');
+            overlay.setAttribute('aria-hidden', 'true');
+            hamburger.setAttribute('aria-expanded', 'false');
+
+            document.body.classList.remove('tk-scroll-locked');
+            document.removeEventListener('keydown', handleKeyDown);
+
+            if (lastActiveElement && typeof lastActiveElement.focus === 'function') {
+                lastActiveElement.focus();
+            }
+        }
+
+        function toggleDrawer() {
+            const isOpen = drawer.classList.contains('active');
+            if (isOpen) {
+                closeDrawer();
             } else {
-                function raf(time) {
-                    lenis.raf(time);
-                    requestAnimationFrame(raf);
-                }
-                requestAnimationFrame(raf);
+                openDrawer();
             }
         }
 
-        // 2. Center-to-Left Logo Sticky Header Animation with GSAP & ScrollTrigger
-        initLogoMorphAndHeader();
-
-        // 3. Bento Grid Cards Stagger Reveal
-        initBentoScrollAnimations();
-
-        // 4. Telemetry Counter Scroll Trigger
-        initTelemetryCounters();
-    }
-
-    /**
-     * Center Hero Logo to Left Sticky Header Docking Animation
-     */
-    function initLogoMorphAndHeader() {
-        const header = document.getElementById('masthead');
-        const heroLogo = document.getElementById('tk-center-hero-logo');
-        const navSlot = document.getElementById('tk-navbar-logo-slot');
-        const heroStage = document.getElementById('hero-stage');
-
-        if (!header || !heroLogo || !heroStage) {
-            return;
-        }
-
-        if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-            // ScrollTrigger for sticky header state
-            ScrollTrigger.create({
-                trigger: '#hero-stage',
-                start: 'top top',
-                end: 'bottom 120px',
-                onUpdate: (self) => {
-                    if (self.progress > 0.15) {
-                        header.classList.add('is-sticky');
-                    } else {
-                        header.classList.remove('is-sticky');
-                    }
-                }
-            });
-
-            // Center-to-Left Logo Morph Transition
-            const logoTimeline = gsap.timeline({
-                scrollTrigger: {
-                    trigger: '#hero-stage',
-                    start: 'top top',
-                    end: 'bottom 200px',
-                    scrub: 0.8,
-                }
-            });
-
-            // Smoothly scale down hero logo and fade toward docking slot
-            logoTimeline.to(heroLogo, {
-                scale: 0.45,
-                opacity: 0,
-                y: -60,
-                ease: 'power2.inOut'
-            });
-
-            if (navSlot) {
-                // Fade in sticky nav logo as hero logo disappears
-                gsap.set(navSlot, { opacity: 0, scale: 0.7, x: -15 });
-                gsap.to(navSlot, {
-                    scrollTrigger: {
-                        trigger: '#hero-stage',
-                        start: 'center top',
-                        end: 'bottom top',
-                        scrub: 0.5,
-                    },
-                    opacity: 1,
-                    scale: 1,
-                    x: 0,
-                    ease: 'power1.out'
-                });
+        function handleKeyDown(e) {
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                closeDrawer();
+                return;
             }
 
-        } else {
-            // Fallback for when GSAP is offline
-            window.addEventListener('scroll', function () {
-                if (window.scrollY > 120) {
-                    header.classList.add('is-sticky');
-                    if (navSlot) navSlot.style.opacity = '1';
-                } else {
-                    header.classList.remove('is-sticky');
-                    if (navSlot) navSlot.style.opacity = '0';
+            if (e.key === 'Tab') {
+                const focusable = drawer.querySelectorAll(
+                    'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+                );
+                if (focusable.length === 0) return;
+
+                const firstElement = focusable[0];
+                const lastElement = focusable[focusable.length - 1];
+
+                if (e.shiftKey && document.activeElement === firstElement) {
+                    e.preventDefault();
+                    lastElement.focus();
+                } else if (!e.shiftKey && document.activeElement === lastElement) {
+                    e.preventDefault();
+                    firstElement.focus();
                 }
-            }, { passive: true });
-        }
-    }
-
-    /**
-     * Staggered Bento Grid Card Reveal on Scroll
-     */
-    function initBentoScrollAnimations() {
-        if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
-            return;
-        }
-
-        const cards = gsap.utils.toArray('.tk-bento-card');
-        if (!cards.length) return;
-
-        ScrollTrigger.batch(cards, {
-            start: 'top 85%',
-            once: true,
-            onEnter: (batch) => {
-                gsap.fromTo(batch, {
-                    opacity: 0,
-                    y: 40,
-                    scale: 0.98
-                }, {
-                    opacity: 1,
-                    y: 0,
-                    scale: 1,
-                    duration: 0.8,
-                    stagger: 0.15,
-                    ease: 'power3.out'
-                });
             }
+        }
+
+        hamburger.addEventListener('click', toggleDrawer);
+        overlay.addEventListener('click', closeDrawer);
+        if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+
+        drawerLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                closeDrawer();
+            });
         });
     }
 
     /**
-     * Dynamic Telemetry Animated Counters
+     * 2. CENTER-TO-HEADER LOGO ANIMATION (FLIGHT DOCK ENGINE)
+     */
+    function initCenterToHeaderLogoAnimation() {
+        const header = document.getElementById('tk-header');
+        const heroEmblem = document.getElementById('heroEmblem');
+        const navDock = document.getElementById('tkNavLogoDock');
+        const headerLogoImg = document.getElementById('tkHeaderLogoImg');
+
+        if (!heroEmblem || !header) return;
+
+        let isTicking = false;
+        let isDocked = false;
+
+        function updateFlight() {
+            const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+            const threshold = 60;
+
+            // Toggle header scrolled state
+            if (scrollY > 30) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+
+            if (scrollY <= 0) {
+                // Resting hero state
+                heroEmblem.style.transform = 'translate3d(0, 0, 0) scale(1)';
+                heroEmblem.style.opacity = '1';
+                heroEmblem.style.visibility = 'visible';
+                if (headerLogoImg) headerLogoImg.classList.remove('is-docked');
+                isDocked = false;
+            } else if (scrollY >= threshold + 140) {
+                // Fully docked state
+                if (!isDocked) {
+                    heroEmblem.style.opacity = '0';
+                    heroEmblem.style.visibility = 'hidden';
+                    if (headerLogoImg) headerLogoImg.classList.add('is-docked');
+                    isDocked = true;
+                }
+            } else if (scrollY > threshold) {
+                // Transition flight state
+                if (navDock) {
+                    const heroRect = heroEmblem.getBoundingClientRect();
+                    const dockRect = navDock.getBoundingClientRect();
+
+                    const deltaX = dockRect.left + (dockRect.width / 2) - (heroRect.left + (heroRect.width / 2));
+                    const deltaY = dockRect.top + (dockRect.height / 2) - (heroRect.top + (heroRect.height / 2));
+                    const progress = Math.min((scrollY - threshold) / 140, 1);
+                    const ease = 1 - Math.pow(1 - progress, 3);
+
+                    const curX = deltaX * ease;
+                    const curY = deltaY * ease;
+                    const curScale = 1 - (1 - (44 / 116)) * ease;
+
+                    heroEmblem.style.transform = `translate3d(${curX.toFixed(2)}px, ${curY.toFixed(2)}px, 0) scale(${curScale.toFixed(4)})`;
+                    heroEmblem.style.opacity = (1 - progress * 0.4).toFixed(3);
+                    heroEmblem.style.visibility = 'visible';
+                }
+
+                if (headerLogoImg) headerLogoImg.classList.remove('is-docked');
+                isDocked = false;
+            } else {
+                // Scrolling 0-60px
+                heroEmblem.style.transform = 'translate3d(0, 0, 0) scale(1)';
+                heroEmblem.style.opacity = '1';
+                heroEmblem.style.visibility = 'visible';
+                if (headerLogoImg) headerLogoImg.classList.remove('is-docked');
+                isDocked = false;
+            }
+
+            isTicking = false;
+        }
+
+        window.addEventListener('scroll', function () {
+            if (!isTicking) {
+                window.requestAnimationFrame(updateFlight);
+                isTicking = true;
+            }
+        }, { passive: true });
+
+        window.addEventListener('resize', updateFlight);
+        updateFlight();
+    }
+
+    /**
+     * 3. TELEMETRY STATS COUNTER
      */
     function initTelemetryCounters() {
         const counters = document.querySelectorAll('.tk-counter');
@@ -187,51 +215,39 @@
                 const target = parseInt(counter.getAttribute('data-target'), 10) || 0;
                 const prefix = counter.getAttribute('data-prefix') || '';
                 const suffix = counter.getAttribute('data-suffix') || '+';
-                const duration = 2000;
-                const start = 0;
+                const duration = 1800;
                 const startTime = performance.now();
 
-                function updateCounter(currentTime) {
+                function update(currentTime) {
                     const elapsed = currentTime - startTime;
                     const progress = Math.min(elapsed / duration, 1);
-                    // Ease out expo
-                    const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-                    const currentCount = Math.floor(easeProgress * (target - start) + start);
+                    const ease = 1 - Math.pow(1 - progress, 3);
+                    const current = Math.floor(ease * target);
 
-                    counter.textContent = prefix + currentCount.toLocaleString() + suffix;
+                    counter.textContent = prefix + current.toLocaleString() + suffix;
 
                     if (progress < 1) {
-                        requestAnimationFrame(updateCounter);
+                        requestAnimationFrame(update);
                     } else {
                         counter.textContent = prefix + target.toLocaleString() + suffix;
                     }
                 }
 
-                requestAnimationFrame(updateCounter);
+                requestAnimationFrame(update);
             });
         }
 
-        if (typeof ScrollTrigger !== 'undefined') {
-            ScrollTrigger.create({
-                trigger: '#telemetry-counters',
-                start: 'top 90%',
-                once: true,
-                onEnter: runCounters
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    runCounters();
+                    observer.disconnect();
+                }
             });
-        } else {
-            // Fallback IntersectionObserver
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        runCounters();
-                        observer.disconnect();
-                    }
-                });
-            }, { threshold: 0.5 });
+        }, { threshold: 0.3 });
 
-            const el = document.getElementById('telemetry-counters');
-            if (el) observer.observe(el);
-        }
+        const el = document.getElementById('telemetry-counters');
+        if (el) observer.observe(el);
     }
 
 })();

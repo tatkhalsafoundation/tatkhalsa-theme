@@ -186,11 +186,16 @@ html.lenis, html.lenis body {
    ========================================================================== */
 body {
   font-family: var(--tk-font-sans);
-  background-color: var(--tk-bg-canvas);
+  font-size: 1rem;
   color: var(--tk-text-primary);
+  background-color: var(--tk-bg-base);
   min-height: 100vh;
   overflow-x: hidden;
   transition: background-color var(--tk-duration-normal) ease, color var(--tk-duration-normal) ease;
+}
+
+body.tk-scroll-locked {
+  overflow: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -334,43 +339,50 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 }
 
 /* ==========================================================================
-   6. HEADER & STICKY NAVIGATION WITH LOGO MORPH
+   6. HEADER & STICKY NAVIGATION WITH LOGO MORPH (CLEAN 2-ITEM BAR + OFF-CANVAS DRAWER)
    ========================================================================== */
-.tk-header-wrapper {
+.tk-header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
+  width: 100%;
   z-index: 1000;
-  padding: var(--tk-space-4) var(--tk-space-6);
-  pointer-events: none;
+  padding: 14px 24px;
+  background: rgba(10, 37, 64, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.tk-navbar {
+.tk-header.scrolled {
+  padding: 10px 24px;
+  background: rgba(5, 11, 20, 0.94);
+  border-bottom-color: rgba(225, 169, 42, 0.22);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+.tk-header-container {
   max-width: var(--tk-container-max);
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--tk-nav-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--tk-nav-border);
-  border-radius: var(--tk-radius-pill);
-  padding: 8px 16px 8px 24px;
-  box-shadow: var(--tk-card-shadow);
-  pointer-events: auto;
-  transition: all var(--tk-duration-smooth) var(--tk-ease-spring);
+  gap: 16px;
 }
 
-.tk-nav-brand-slot {
-  display: flex;
+/* 6.1 Header Left: Destination Anchor for Circular Emblem */
+.tk-logo-anchor {
+  display: inline-flex;
   align-items: center;
   gap: 12px;
-  min-width: 220px;
+  text-decoration: none;
+  min-height: 44px;
+  z-index: 1002;
 }
 
-.tk-nav-logo-target {
+.tk-header-logo-dock {
   width: 44px;
   height: 44px;
   display: flex;
@@ -379,105 +391,354 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   position: relative;
 }
 
-.tk-nav-logo-target img {
+.tk-header-logo-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  opacity: 0; /* GSAP will fade in or morph */
-  transform: scale(0.85);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.tk-nav-logo-target.is-scrolled img {
+.tk-header-logo-img.is-docked {
   opacity: 1;
   transform: scale(1);
+  box-shadow: 0 0 16px var(--tk-gold-glow);
 }
 
-.tk-nav-title-group {
+.tk-logo-brand {
   display: flex;
   flex-direction: column;
 }
 
-.tk-nav-title {
+.tk-logo-title {
   font-family: var(--tk-font-display);
   font-weight: 800;
-  font-size: 1.05rem;
-  color: var(--tk-text-white);
+  font-size: 1.125rem;
+  color: #ffffff;
   line-height: 1.1;
   letter-spacing: -0.01em;
 }
 
-.tk-nav-subtitle {
+.tk-logo-subtitle {
   font-size: 0.6875rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--tk-gold);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.tk-nav-menu {
-  display: flex;
+/* 6.2 Header Right: Blood On Call 2.0 CTA & Minimal 3-Line Hamburger */
+.tk-header-right {
+  display: inline-flex;
   align-items: center;
-  gap: var(--tk-space-2);
-  list-style: none;
+  gap: 14px;
+  flex-shrink: 0;
 }
 
-.tk-nav-link {
-  padding: 8px 16px;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--tk-text-secondary);
+/* Protruding Blood Drop Button (🩸) */
+.tk-btn-blood {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #EF4444 0%, #DC2626 50%, #991B1B 100%);
+  color: #ffffff !important;
+  font-family: var(--tk-font-sans);
+  font-size: 0.875rem;
+  font-weight: 700;
+  padding: 10px 18px;
   border-radius: var(--tk-radius-pill);
-  transition: all var(--tk-duration-fast) ease;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.45);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.tk-nav-link:hover, .tk-nav-link.active {
-  color: var(--tk-gold);
-  background: rgba(225, 169, 42, 0.08);
+.tk-btn-blood:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 22px rgba(220, 38, 38, 0.65);
+  border-color: rgba(255, 255, 255, 0.45);
 }
 
-.tk-nav-actions {
-  display: flex;
+.tk-btn-blood:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.tk-btn-blood-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--tk-radius-pill);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.35) 0%, transparent 70%);
+  opacity: 0;
+  animation: bloodPulse 2.4s ease-out infinite;
+}
+
+@keyframes bloodPulse {
+  0% { transform: scale(0.85); opacity: 0.8; }
+  50% { transform: scale(1.25); opacity: 0; }
+  100% { transform: scale(1.25); opacity: 0; }
+}
+
+.tk-btn-blood-icon {
+  font-size: 1.05rem;
+  line-height: 1;
+  display: inline-block;
+}
+
+.tk-btn-blood-text {
+  letter-spacing: 0.02em;
+}
+
+/* Minimal 3-Line Hamburger Button */
+.tk-hamburger {
+  position: relative;
+  display: inline-flex;
   align-items: center;
-  gap: var(--tk-space-3);
-}
-
-/* Theme Toggle Button */
-.tk-theme-toggle {
-  background: var(--tk-bg-elevated);
-  border: 1px solid var(--tk-border-color);
-  border-radius: 50%;
+  justify-content: center;
   width: 44px;
   height: 44px;
-  color: var(--tk-gold);
+  padding: 0;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--tk-radius-sm);
+  color: #ffffff;
   cursor: pointer;
-  transition: all var(--tk-duration-normal) var(--tk-ease-spring);
+  transition: all 0.2s ease;
+  z-index: 1002;
 }
 
-.tk-theme-toggle:hover {
-  transform: rotate(20deg) scale(1.08);
+.tk-hamburger:hover {
+  background: rgba(225, 169, 42, 0.12);
   border-color: var(--tk-gold);
 }
 
-.tk-theme-toggle svg {
-  width: 20px;
-  height: 20px;
-  fill: currentColor;
+.tk-hamburger-box {
+  width: 22px;
+  height: 16px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-[data-theme="dark"] .tk-icon-sun { display: block; }
-[data-theme="dark"] .tk-icon-moon { display: none; }
-[data-theme="light"] .tk-icon-sun { display: none; }
-[data-theme="light"] .tk-icon-moon { display: block; }
+.tk-hamburger-line {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: #ffffff;
+  border-radius: 2px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+}
 
-/* Mobile Menu Toggle */
-.tk-mobile-toggle {
-  display: none;
-  background: transparent;
-  border: none;
-  color: var(--tk-text-white);
+.tk-hamburger.active .tk-hamburger-line:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.tk-hamburger.active .tk-hamburger-line:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.tk-hamburger.active .tk-hamburger-line:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* 6.3 Off-Canvas Drawer & Blur Overlay (<nav class="tk-drawer">) */
+.tk-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.tk-drawer-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.tk-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(420px, 92vw);
+  height: 100vh;
+  height: 100dvh;
+  background: rgba(5, 11, 20, 0.96);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border-left: 1px solid rgba(225, 169, 42, 0.25);
+  box-shadow: -15px 0 45px rgba(0, 0, 0, 0.6);
+  z-index: 1101;
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tk-drawer.active {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.tk-drawer-inner {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 24px 28px;
+}
+
+.tk-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 24px;
+}
+
+.tk-drawer-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tk-drawer-logo {
+  border-radius: 50%;
+  border: 1px solid var(--tk-gold);
+}
+
+.tk-drawer-brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.tk-drawer-brand-title {
+  font-family: var(--tk-font-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: #ffffff;
+}
+
+.tk-drawer-brand-tagline {
+  font-size: 0.75rem;
+  color: var(--tk-gold);
+  letter-spacing: 0.04em;
+}
+
+.tk-drawer-close {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  color: #ffffff;
   cursor: pointer;
-  padding: 8px;
+  transition: all 0.2s ease;
+}
+
+.tk-drawer-close:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: var(--tk-crimson);
+  color: var(--tk-crimson);
+  transform: rotate(90deg);
+}
+
+.tk-drawer-nav {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+}
+
+.tk-drawer-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border-radius: var(--tk-radius-md);
+  color: #e2e8f0;
+  text-decoration: none;
+  font-family: var(--tk-font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  background: transparent;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.tk-drawer-link:hover {
+  color: var(--tk-gold);
+  background: rgba(225, 169, 42, 0.08);
+  border-color: rgba(225, 169, 42, 0.2);
+  transform: translateX(4px);
+}
+
+.tk-drawer-link-contribute {
+  color: var(--tk-gold);
+  background: rgba(225, 169, 42, 0.05);
+  border-color: rgba(225, 169, 42, 0.15);
+}
+
+.tk-drawer-link-contribute:hover {
+  background: rgba(225, 169, 42, 0.15);
+}
+
+.tk-drawer-icon {
+  font-size: 1.15rem;
+}
+
+.tk-drawer-footer {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tk-btn-blood-drawer {
+  width: 100%;
+  justify-content: center;
+  padding: 12px 20px;
+  font-size: 0.95rem;
+}
+
+.tk-drawer-contact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8125rem;
+  color: var(--tk-text-muted);
+}
+
+.tk-drawer-phone {
+  color: var(--tk-gold);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.tk-drawer-phone:hover {
+  text-decoration: underline;
 }
 
 /* ==========================================================================
@@ -491,8 +752,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 130px var(--tk-space-6) var(--tk-space-16);
-  background: var(--tk-hero-mesh);
+  padding: 120px var(--tk-space-6) var(--tk-space-16);
+  background: radial-gradient(circle at 50% 20%, #0a2540 0%, #050b14 75%);
   overflow: hidden;
 }
 
@@ -501,7 +762,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   inset: 0;
   background-size: cover;
   background-position: center;
-  opacity: 0.12;
+  opacity: 0.14;
   mix-blend-mode: overlay;
   pointer-events: none;
 }
@@ -516,69 +777,73 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   align-items: center;
 }
 
-/* Center Brand Stage for GSAP Morph */
-.tk-hero-brand-stage {
+/* Center Hero Logo Wrapper & Stage */
+.hero-logo-wrapper {
   position: relative;
-  margin-bottom: var(--tk-space-6);
-}
-
-.tk-center-logo-anchor {
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(10, 50, 125, 0.4) 0%, rgba(2, 6, 23, 0.8) 100%);
-  padding: 10px;
-  border: 2px solid var(--tk-gold);
-  box-shadow: 0 0 45px var(--tk-gold-glow);
+  margin-bottom: var(--tk-space-5);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto;
-  transition: transform 0.4s var(--tk-ease-spring);
 }
 
-.tk-center-logo-anchor img {
+.hero-emblem {
+  width: 116px;
+  height: 116px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(10, 50, 125, 0.4) 0%, rgba(2, 6, 23, 0.9) 100%);
+  padding: 10px;
+  border: 2px solid var(--tk-gold);
+  box-shadow: 0 0 35px var(--tk-gold-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  will-change: transform, opacity;
+}
+
+.hero-emblem-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-/* Live Dispatch Radar Pill */
-.tk-hero-radar-badge {
+/* Regulatory Trust Badge */
+.tk-regulatory-badge {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.35);
+  background: rgba(225, 169, 42, 0.08);
+  border: 1px solid rgba(225, 169, 42, 0.3);
   border-radius: var(--tk-radius-pill);
-  padding: 6px 18px;
-  font-size: 0.8125rem;
+  padding: 8px 20px;
+  font-size: 0.785rem;
   font-weight: 700;
-  color: var(--tk-emerald);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  color: var(--tk-gold-light);
+  letter-spacing: 0.04em;
   margin-bottom: var(--tk-space-5);
-  box-shadow: 0 0 20px var(--tk-emerald-glow);
+  box-shadow: 0 0 20px rgba(225, 169, 42, 0.15);
+  max-width: 100%;
 }
 
-.tk-radar-dot {
+.tk-badge-pulse {
   width: 8px;
   height: 8px;
   background-color: var(--tk-emerald);
   border-radius: 50%;
   position: relative;
+  flex-shrink: 0;
 }
 
-.tk-radar-dot::after {
+.tk-badge-pulse::after {
   content: '';
   position: absolute;
   inset: -4px;
   border-radius: 50%;
   border: 2px solid var(--tk-emerald);
-  animation: radarPulse 2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+  animation: badgePulse 2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
 }
 
-@keyframes radarPulse {
+@keyframes badgePulse {
   0% { transform: scale(0.6); opacity: 1; }
   100% { transform: scale(2.4); opacity: 0; }
 }

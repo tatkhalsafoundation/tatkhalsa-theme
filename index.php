@@ -11,24 +11,32 @@ get_header(); ?>
 <main id="primary-content" class="tk-main-flow" role="main">
 
     <!-- =========================================================================
-         HERO SECTION: CENTER BRAND MORPH STAGE & TELEMETRY RADAR
+         HERO SECTION: CENTER BRAND MORPH STAGE & REGULATORY TRUST BADGE
          ========================================================================= -->
-    <section class="tk-hero-section" id="hero-stage">
+    <section class="tk-hero-section" id="home">
         <div class="tk-hero-bg-overlay" style="background-image: url('<?php echo esc_url(get_template_directory_uri() . '/assets/images/golden-temple.webp'); ?>');"></div>
 
         <div class="tk-hero-content">
             
-            <!-- Live Radar Status Pill -->
-            <div class="tk-hero-radar-badge" role="status" aria-live="polite">
-                <span class="tk-radar-dot"></span>
-                <span>Live Dispatch Active &bull; Punjab &amp; Global Grid</span>
+            <!-- GSAP Center-to-Header Logo Source Stage -->
+            <div class="hero-logo-wrapper" id="heroLogoWrapper">
+                <div class="hero-emblem" id="heroEmblem">
+                    <img 
+                        src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/tatkhalsa-logo.png'); ?>" 
+                        alt="Tatkhalsa Foundation Emblem" 
+                        class="hero-emblem-img" 
+                        id="heroEmblemImg"
+                        width="116" 
+                        height="116" 
+                        loading="eager"
+                    />
+                </div>
             </div>
 
-            <!-- GSAP Center-to-Left Logo Source Stage -->
-            <div class="tk-hero-brand-stage" id="hero-brand-stage">
-                <div class="tk-center-logo-anchor" id="tk-center-hero-logo">
-                    <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/tatkhalsa-logo.png'); ?>" alt="Tatkhalsa Foundation Emblem" width="130" height="130">
-                </div>
+            <!-- Regulatory Trust Badge -->
+            <div class="tk-regulatory-badge">
+                <span class="tk-badge-pulse"></span>
+                <span class="tk-badge-text">Regd. Section 8 NGO &bull; 80G &amp; 12A Certified &bull; Darpan Verified &bull; CIN U88900PB2023NPL059225</span>
             </div>
 
             <!-- Main Heading with Gold Shimmer -->
@@ -43,18 +51,17 @@ get_header(); ?>
 
             <!-- Dual Primary CTAs -->
             <div class="tk-hero-cta-group">
-                <button class="tk-btn tk-btn-emergency tk-touch-target" data-modal="modal-request-blood">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
-                    <span>Request Emergency Blood (SOS)</span>
-                </button>
+                <a href="#blood-on-call" class="tk-btn tk-btn-emergency tk-touch-target">
+                    <span class="tk-btn-blood-icon" aria-hidden="true">🩸</span>
+                    <span>Request Blood (SOS)</span>
+                </a>
 
-                <button class="tk-btn tk-btn-gold tk-touch-target" data-modal="modal-register-donor">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                    <span>Register as Verified Donor</span>
-                </button>
-
-                <a href="#seva-verticals" class="tk-btn tk-btn-glass tk-touch-target">
+                <a href="#seva-verticals" class="tk-btn tk-btn-gold tk-touch-target">
                     <span>Explore Seva Missions</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
                 </a>
             </div>
 
