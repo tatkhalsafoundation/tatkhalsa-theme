@@ -48,10 +48,6 @@
                     loading="eager" 
                 />
             </div>
-            <div class="tk-logo-brand">
-                <span class="tk-logo-title"><?php bloginfo('name'); ?></span>
-                <span class="tk-logo-subtitle">Foundation</span>
-            </div>
         </a>
 
         <!-- Right: Blood On Call 2.0 CTA & Minimal 3-Line Hamburger Button -->

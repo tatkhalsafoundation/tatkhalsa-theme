@@ -33,6 +33,9 @@ get_header(); ?>
                 </div>
             </div>
 
+            <!-- Sikh heritage subtitle kept intentionally beneath the emblem -->
+            <p class="tk-heritage-subtitle" lang="pa">ਤੱਤ ਖਾਲਸਾ ਫਾਊਂਡੇਸ਼ਨ <span aria-hidden="true">•</span> ਸੇਵਾ • ਸਮਰਪਣ • ਪਾਰਦਰਸ਼ਤਾ</p>
+
             <!-- Regulatory Trust Badge -->
             <div class="tk-regulatory-badge">
                 <span class="tk-badge-pulse"></span>
@@ -56,8 +59,8 @@ get_header(); ?>
                     <span>Request Blood (SOS)</span>
                 </a>
 
-                <a href="#seva-verticals" class="tk-btn tk-btn-gold tk-touch-target">
-                    <span>Explore Seva Missions</span>
+                <a href="#contribute" class="tk-btn tk-btn-gold tk-touch-target">
+                    <span>Give Dasvandh</span>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                         <polyline points="12 5 19 12 12 19"></polyline>

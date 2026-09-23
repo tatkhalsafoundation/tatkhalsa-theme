@@ -129,7 +129,7 @@
 
         function updateFlight() {
             const scrollY = window.pageYOffset || document.documentElement.scrollTop;
-            const threshold = 60;
+            const threshold = 50;
 
             // Toggle header scrolled state
             if (scrollY > 30) {
