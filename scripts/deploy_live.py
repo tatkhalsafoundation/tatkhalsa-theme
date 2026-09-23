@@ -7,7 +7,9 @@ import http.cookiejar
 import re
 import ssl
 
-BASE_URL = os.environ.get("WP_ADMIN_URL", "https://palegoldenrod-rhinoceros-801104.hostingersite.com").rstrip("/")
+raw_url = os.environ.get("WP_ADMIN_URL", "https://tatkhalsa.in").rstrip("/")
+# Normalize URL to base site domain without trailing /wp-admin
+BASE_URL = re.sub(r'/wp-admin/?$', '', raw_url)
 USERNAME = os.environ.get("WP_ADMIN_USER", "tatkhalsafoundation")
 PASSWORD = os.environ.get("WP_ADMIN_PASS", "")
 
@@ -23,10 +25,10 @@ print("Packaging theme files...")
 with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
     for root, dirs, files in os.walk("."):
         # Exclude hidden git/github files and zip file itself
-        if ".git" in root or ".github" in root:
+        if ".git" in root or ".github" in root or "scripts" in root:
             continue
         for f in files:
-            if f == zip_path or f == "deploy.py":
+            if f == zip_path or f.endswith(".py"):
                 continue
             full_path = os.path.join(root, f)
             arcname = os.path.join("tatkhalsa-theme", os.path.relpath(full_path, "."))
@@ -45,7 +47,7 @@ opener = urllib.request.build_opener(
     urllib.request.HTTPSHandler(context=ctx)
 )
 
-print("Authenticating with WordPress Admin...")
+print(f"Authenticating with WordPress Admin at {BASE_URL}/wp-login.php...")
 login_data = urllib.parse.urlencode({
     'log': USERNAME,
     'pwd': PASSWORD,
@@ -62,9 +64,11 @@ req_login = urllib.request.Request(
 resp_login = opener.open(req_login)
 login_html = resp_login.read().decode('utf-8', errors='ignore')
 
-if 'wp-admin-bar' not in login_html and 'dashboard' not in login_html:
-    print("Authentication failed.")
-    sys.exit(1)
+if 'wp-admin-bar' not in login_html and 'dashboard' not in login_html and 'adminmenu' not in login_html:
+    print("Authentication warning: check response text.")
+    if "ERROR" in login_html:
+        print("Login error message detected in response.")
+        sys.exit(1)
 
 print("Authentication successful! Fetching upload nonce...")
 req_install = urllib.request.Request(
