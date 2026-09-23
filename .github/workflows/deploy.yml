@@ -14,16 +14,15 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Sync Theme via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          server: ${{ secrets.HOSTINGER_FTP_SERVER }}
-          username: ${{ secrets.HOSTINGER_FTP_USERNAME }}
-          password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
-          protocol: ftps
-          port: 21
-          server-dir: public_html/wp-content/themes/tatkhalsa-theme/
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
+          python-version: '3.11'
+
+      - name: Deploy Theme to Hostinger
+        env:
+          WP_ADMIN_URL: ${{ secrets.WP_ADMIN_URL }}
+          WP_ADMIN_USER: ${{ secrets.WP_ADMIN_USER }}
+          WP_ADMIN_PASS: ${{ secrets.WP_ADMIN_PASS }}
+        run: |
+          python scripts/deploy_live.py
