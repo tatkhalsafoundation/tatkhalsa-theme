@@ -19,17 +19,19 @@ if not PASSWORD:
 print(f"Deploying theme to Hostinger WP target: {BASE_URL}")
 
 # 1. Package theme into tatkhalsa-theme.zip
-zip_path = "tatkhalsa-theme.zip"
-print("Packaging theme files...")
+script_dir = os.path.dirname(os.path.abspath(__file__))
+repo_root = os.path.dirname(script_dir) if os.path.basename(script_dir) == "scripts" else script_dir
+zip_path = os.path.join(repo_root, "tatkhalsa-theme.zip")
+print(f"Packaging theme files from {repo_root}...")
 with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
-    for root, dirs, files in os.walk("."):
+    for root, dirs, files in os.walk(repo_root):
         if ".git" in root or ".github" in root or "scripts" in root:
             continue
         for f in files:
-            if f == zip_path or f.endswith(".py"):
+            if f == "tatkhalsa-theme.zip" or f.endswith(".py"):
                 continue
             full_path = os.path.join(root, f)
-            arcname = os.path.join("tatkhalsa-theme", os.path.relpath(full_path, "."))
+            arcname = os.path.join("tatkhalsa-theme", os.path.relpath(full_path, repo_root))
             z.write(full_path, arcname)
 
 print(f"Theme packaged successfully ({os.path.getsize(zip_path)} bytes).")
