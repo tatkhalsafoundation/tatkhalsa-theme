@@ -132,7 +132,7 @@ function tk_enqueue_scripts() {
         'themeUrl'  => get_template_directory_uri(),
         'siteUrl'   => home_url(),
         'emergency' => array(
-            'phonePunjab' => '+91 98770 38520',
+            'phonePunjab' => '+44 7418 378646',
             'phoneDubai'  => '+971 58 211 1596',
             'cin'         => 'U88900PB2023NPL059225'
         )
@@ -470,7 +470,7 @@ function tk_ajax_submit_blood_request() {
         'message'     => 'Emergency requisition broadcast to Blood On Call 2.0 rapid dispatch fleet. A coordinator is dispatching donors immediately.',
         'tracking_id' => $tracking_id,
         'eta'         => '< 15 minutes',
-        'helpline'    => '+91 98770 38520'
+        'helpline'    => '+44 7418 378646'
     ));
 }
 add_action('wp_ajax_tk_submit_blood_request', 'tk_ajax_submit_blood_request');

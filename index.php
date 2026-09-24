@@ -278,7 +278,7 @@ get_header(); ?>
                         <span>Annual audited balance sheets published publicly.</span>
                     </li>
                 </ul>
-                <a href="tel:+919877038520" class="tk-btn tk-btn-gold tk-touch-target">Call Accounts Desk (+91 98770 38520)</a>
+                <a href="https://wa.me/447418378646?text=Waheguru%20Ji%20Ka%20Khalsa%2C%20Waheguru%20Ji%20Ki%20Fateh.%20I%20need%20assistance%20from%20Tatkhalsa%20%20Support." class="tk-btn tk-btn-gold tk-touch-target">WhatsApp Accounts Desk (+44 7418 378646)</a>
             </div>
 
             <div class="tk-bento-card col-6">
@@ -404,7 +404,7 @@ get_header(); ?>
                 </div>
                 <div class="tk-form-group">
                     <label class="tk-form-label" for="donor-phone">Mobile Phone (WhatsApp) *</label>
-                    <input type="tel" id="donor-phone" name="phone" class="tk-form-control" required placeholder="+91 98770 XXXXX">
+                    <input type="tel" id="donor-phone" name="phone" class="tk-form-control" required placeholder="+91 98XXX XXXXX">
                 </div>
             </div>
 

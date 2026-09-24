@@ -265,7 +265,7 @@
                         form.reset();
                     } else {
                         feedback.style.color = 'var(--tk-crimson)';
-                        feedback.innerHTML = `&#9888; ${data.data && data.data.message ? data.data.message : 'Error submitting request. Please call helpline directly at +91 98770 38520.'}`;
+                        feedback.innerHTML = `&#9888; ${data.data && data.data.message ? data.data.message : 'Error submitting request. Please connect on WhatsApp helpline directly at +44 7418 378646.'}`;
                     }
                 }
             })
@@ -275,7 +275,7 @@
                 if (feedback) {
                     feedback.style.display = 'block';
                     feedback.style.color = 'var(--tk-crimson)';
-                    feedback.innerHTML = '&#9888; Network error. Immediate helpline: +91 98770 38520.';
+                    feedback.innerHTML = '&#9888; Network error. Immediate WhatsApp helpline: +44 7418 378646.';
                 }
             });
         });

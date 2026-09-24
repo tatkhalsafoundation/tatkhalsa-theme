@@ -166,8 +166,8 @@
                 <span>Blood On Call 2.0 SOS</span>
             </a>
             <div class="tk-drawer-contact">
-                <span>24x7 Helpline Dispatch:</span>
-                <a href="tel:+919877038520" class="tk-drawer-phone">+91 98770 38520</a>
+                <span>WhatsApp Helpline:</span>
+                <a href="https://wa.me/447418378646?text=Waheguru%20Ji%20Ka%20Khalsa%2C%20Waheguru%20Ji%20Ki%20Fateh.%20I%20need%20assistance%20from%20Tatkhalsa%20%20Support." class="tk-drawer-phone">+44 7418 378646</a>
             </div>
         </div>
 

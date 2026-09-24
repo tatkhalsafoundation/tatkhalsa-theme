@@ -63,8 +63,8 @@
                 <h5 class="tk-footer-heading"><?php esc_html_e('Emergency Helplines', 'tatkhalsa-theme'); ?></h5>
                 <div style="display: flex; flex-direction: column; gap: 12px; font-size: 0.875rem;">
                     <div>
-                        <span style="color: var(--tk-gold); font-weight: 600; display: block; margin-bottom: 2px;">Punjab Emergency Dispatch:</span>
-                        <a href="tel:+919877038520" class="tk-footer-link tk-touch-target" style="font-family: var(--tk-font-mono); font-size: 1rem; color: var(--tk-text-primary); font-weight: 700;">+91 98770 38520</a>
+                        <span style="color: var(--tk-gold); font-weight: 600; display: block; margin-bottom: 2px;">WhatsApp Support Helpline:</span>
+                        <a href="https://wa.me/447418378646?text=Waheguru%20Ji%20Ka%20Khalsa%2C%20Waheguru%20Ji%20Ki%20Fateh.%20I%20need%20assistance%20from%20Tatkhalsa%20%20Support." class="tk-footer-link tk-touch-target" style="font-family: var(--tk-font-mono); font-size: 1rem; color: var(--tk-text-primary); font-weight: 700;">+44 7418 378646</a>
                     </div>
                     <div>
                         <span style="color: var(--tk-gold); font-weight: 600; display: block; margin-bottom: 2px;">Global / UAE Chapter:</span>
