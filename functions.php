@@ -98,6 +98,15 @@ function tk_enqueue_scripts() {
         true
     );
 
+    // 3.5 Anime.js UI Engine
+    wp_enqueue_script(
+        'animejs',
+        'https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js',
+        array(),
+        '3.2.2',
+        true
+    );
+
     // 4. Custom Scroll Physics & GSAP Center-to-Left Logo Sticky Header
     wp_enqueue_script(
         'tk-scroll-physics',
