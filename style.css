@@ -1286,6 +1286,89 @@ body.scrolled .hero-emblem {
 /* ==========================================================================
    11. FLOATING SOS EMERGENCY BAR
    ========================================================================== */
+/* Mobile Glassmorphic Quick Action Bar */
+.tk-floating-action-dock {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 384px;
+  z-index: 990;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 9999px;
+  background: rgba(10, 37, 64, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(225, 169, 42, 0.2);
+  animation: slideUpFloat 0.5s var(--tk-ease-spring);
+}
+
+body.tk-light-mode .tk-floating-action-dock {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(10, 50, 125, 0.1);
+}
+
+.tk-whatsapp-fab-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #25D366;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.4);
+  transition: transform 0.15s ease, background-color 0.15s ease;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.tk-whatsapp-fab-btn:hover {
+  background: #20ba59;
+  transform: scale(1.08);
+}
+
+.tk-whatsapp-fab-btn:active {
+  transform: scale(0.95);
+}
+
+.tk-donate-pill-btn {
+  background: #E1A92A;
+  color: #0A2540;
+  font-weight: 700;
+  font-size: 0.875rem;
+  border-radius: 9999px;
+  padding: 10px 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(225, 169, 42, 0.35);
+  transition: transform 0.15s ease, filter 0.15s ease;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.tk-donate-pill-btn:hover {
+  filter: brightness(1.06);
+  transform: scale(1.03);
+}
+
+.tk-donate-pill-btn:active {
+  transform: scale(0.96);
+}
+
+@media (min-width: 768px) {
+  .tk-floating-action-dock {
+    display: none !important;
+  }
+}
+
 .tk-floating-sos-bar {
   position: fixed;
   bottom: 24px;
